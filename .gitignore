@@ -2,15 +2,13 @@
 
 # dependencies
 /node_modules
+.DS_Store
 
 # testing
 /coverage
 
 # production
 /build
-
-# npmjs
-/dist
 
 # misc
 .DS_Store
@@ -24,5 +22,6 @@ yarn-debug.log*
 yarn-error.log*
 
 package-lock.json
+yarn.lock
 
 commit.sh

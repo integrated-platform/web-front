@@ -1,37 +1,33 @@
-/*!
-
+/**
 =========================================================
-* Material Dashboard React - v1.10.0
+* Material Dashboard 2 React - v2.2.0
 =========================================================
 
 * Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2021 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/material-dashboard-react/blob/master/LICENSE.md)
+* Copyright 2023 Creative Tim (https://www.creative-tim.com)
 
-* Coded by Creative Tim
+Coded by www.creative-tim.com
 
 =========================================================
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
 */
+
 import React from "react";
-import ReactDOM from "react-dom";
-import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
+import { createRoot } from "react-dom/client";
+import { BrowserRouter } from "react-router-dom";
+import App from "App";
 
-// core components
-import Admin from "layouts/Admin.js";
-import RTL from "layouts/RTL.js";
+// Material Dashboard 2 React Context Provider
+import { MaterialUIControllerProvider } from "context";
 
-import "assets/css/material-dashboard-react.css?v=1.10.0";
+const container = document.getElementById("app");
+const root = createRoot(container);
 
-ReactDOM.render(
+root.render(
   <BrowserRouter>
-    <Switch>
-      <Route path="/admin" component={Admin} />
-      <Route path="/rtl" component={RTL} />
-      <Redirect from="/" to="/admin/dashboard" />
-    </Switch>
-  </BrowserRouter>,
-  document.getElementById("root")
+    <MaterialUIControllerProvider>
+      <App />
+    </MaterialUIControllerProvider>
+  </BrowserRouter>
 );
