@@ -61,7 +61,7 @@ function Basic() {
           textAlign="center"
         >
           <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
-            Sign in
+            daev-platform
           </MDTypography>
           <Grid container spacing={3} justifyContent="center" sx={{ mt: 1, mb: 2 }}>
             <Grid item xs={2}>
@@ -98,17 +98,17 @@ function Basic() {
                 onClick={handleSetRememberMe}
                 sx={{ cursor: "pointer", userSelect: "none", ml: -1 }}
               >
-                &nbsp;&nbsp;Remember me
+                &nbsp;&nbsp;기억하기
               </MDTypography>
             </MDBox>
             <MDBox mt={4} mb={1}>
               <MDButton variant="gradient" color="info" fullWidth>
-                sign in
+                로그인
               </MDButton>
             </MDBox>
             <MDBox mt={3} mb={1} textAlign="center">
               <MDTypography variant="button" color="text">
-                Don&apos;t have an account?{" "}
+                계정이 없으신가요?{" "}
                 <MDTypography
                   component={Link}
                   to="/authentication/sign-up"
@@ -117,7 +117,7 @@ function Basic() {
                   fontWeight="medium"
                   textGradient
                 >
-                  Sign up
+                  회원가입
                 </MDTypography>
               </MDTypography>
             </MDBox>
