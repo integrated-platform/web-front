@@ -18,7 +18,6 @@ import CoverLayout from "layouts/authentication/components/CoverLayout";
 import bgImage from "assets/images/bg-sign-up-cover.jpeg";
 
 
-
 const Cover = () => {
   return (
     <CoverLayout image={bgImage}>
