@@ -11,7 +11,7 @@ module.exports = {
     },
     
     resolve: {
-        extensions: ['.js', '.jsx' , '...'],
+        extensions: ['.js', '.jsx' , '.ts' , '.tsx', '...'],
         alias: {
             components: path.resolve(__dirname, 'src/components/'),
             layouts: path.resolve(__dirname, 'src/layouts/'),
@@ -25,7 +25,7 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.(js|jsx)$/,
+                test: /\.(js|jsx|ts|tsx)$/,
                 exclude: /node_modules/,
                 use: {
                     loader: 'babel-loader',
