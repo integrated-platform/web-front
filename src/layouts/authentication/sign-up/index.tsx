@@ -6,6 +6,7 @@ import MDInput from "components/MDInput";
 import MDButton from "components/MDButton";
 import CoverLayout from "layouts/authentication/components/CoverLayout";
 import bgImage from "assets/images/bg-sign-up-cover.jpeg";
+import { publicApiRequest } from '../../../utils/api'; // 경로에 맞게 수정하세요
 import { ChangeEvent, FormEvent, useState } from "react";
 
 // 회원가입 폼 데이터 타입 정의
@@ -67,27 +68,14 @@ const Cover = () => {
   
       // 인증 서버에 회원가입 요청
       try {
-        const response = await fetch("http://localhost:5000/register", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            username: formData.username,
-            email: formData.email,
-            password: formData.password,
-          }),
+        // Axios를 사용하여 API 요청
+        const data = await publicApiRequest('/register', 'POST', {
+          username: formData.username,
+          email: formData.email,
+          password: formData.password,
         });
-  
-        if (!response.ok) {
-          // 서버에서 오류 응답 처리
-          const errorData = await response.json();
-          alert(`회원가입 실패: ${errorData.message}`);
-          return;
-        }
-  
-        const data = await response.json();
-        // alert("회원가입 성공! 토큰: " + data.token);
+        
+        alert("회원가입 성공!");
   
         // 폼 초기화
         setFormData({
@@ -97,8 +85,10 @@ const Cover = () => {
           confirmPassword: "",
         });
       } catch (error) {
-        console.error("회원가입 요청 중 오류 발생:", error);
-        alert("회원가입 요청 중 오류가 발생했습니다.");
+        // 오류 메시지 처리
+        const errorMessage = (error instanceof Error) ? error.message : '회원가입 요청 중 오류가 발생했습니다.';
+        console.error("회원가입 요청 중 오류 발생:", errorMessage);
+        alert(`회원가입 실패: ${errorMessage}`);
       }
     }
   };

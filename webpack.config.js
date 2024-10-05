@@ -58,12 +58,14 @@ module.exports = {
         }),
         new webpack.DefinePlugin({
             'process.env.PUBLIC_URL': JSON.stringify(process.env.PUBLIC_URL || ''),
+            'process.env.REACT_APP_API_URL': JSON.stringify(process.env.REACT_APP_API_URL || ''),
         }),
     ],
     
     devServer: {
         static: "./dist",
-        historyApiFallback: true // React Router와 함께 사용 시 필요
+        historyApiFallback: true,
+        port: 3000,
     },
     mode: "development", // 또는 "production"
 };
