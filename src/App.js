@@ -53,6 +53,27 @@ import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "co
 import brandWhite from "assets/images/logo-ct.png";
 import brandDark from "assets/images/logo-ct-dark.png";
 
+import Dashboard from "layouts/dashboard";
+import Tables from "layouts/tables";
+import Billing from "layouts/billing";
+import Notifications from "layouts/notifications";
+import Profile from "layouts/profile";
+import SignIn from "layouts/authentication/sign-in";
+import SignUp from "layouts/authentication/sign-up";
+import useFetchMenus from './utils/hook/useFetchMenus.js'; // 훅 import
+
+// 필요한 모든 컴포넌트를 가져옵니다.
+const componentMap = {
+  dashboard: Dashboard,
+  tables: Tables,
+  billing: Billing,
+  notifications: Notifications,
+  profile: Profile,
+  signIn: SignIn,
+  signUp: SignUp,
+  // 필요한 모든 컴포넌트를 추가합니다.
+};
+
 export default function App() {
   const [controller, dispatch] = useMaterialUIController();
   const {
@@ -68,6 +89,11 @@ export default function App() {
   const [onMouseEnter, setOnMouseEnter] = useState(false);
   const [rtlCache, setRtlCache] = useState(null);
   const { pathname } = useLocation();
+
+  // 신규 개발
+  // const routes = useFetchMenus(); // 훅 사용
+
+  
 
   // Cache for the rtl
   useMemo(() => {
@@ -97,6 +123,7 @@ export default function App() {
 
   // Change the openConfigurator state
   const handleConfiguratorOpen = () => setOpenConfigurator(dispatch, !openConfigurator);
+
 
   // Setting the dir attribute for the body element
   useEffect(() => {
@@ -166,9 +193,15 @@ export default function App() {
         )}
         {layout === "vr" && <Configurator />}
         <Routes>
-          {getRoutes(routes)}
-          <Route path="*" element={<Navigate to="/authentication/sign-in" />} />
-        </Routes>
+        {/* 기본 경로("/")에서 "/authentication/sign-in"으로 리다이렉트 */}
+        <Route path="/" element={<Navigate to="/authentication/sign-in" />} />
+        
+            {/* 나머지 경로 */}
+            {getRoutes(routes)}
+
+        {/* 모든 정의되지 않은 경로에 대해서도 로그인 페이지로 리다이렉트 */}
+        <Route path="*" element={<Navigate to="/authentication/sign-in" />} />
+      </Routes>
       </ThemeProvider>
     </CacheProvider>
   ) : (

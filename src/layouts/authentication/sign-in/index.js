@@ -1,35 +1,49 @@
-
 import { useState } from "react";
-
-// react-router-dom components
-import { Link } from "react-router-dom";
-
-// @mui material components
+import { Link, useNavigate } from "react-router-dom"; // useNavigate 추가
 import Card from "@mui/material/Card";
 import Switch from "@mui/material/Switch";
 import Grid from "@mui/material/Grid";
 import MuiLink from "@mui/material/Link";
-
-// @mui icons
 import FacebookIcon from "@mui/icons-material/Facebook";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import GoogleIcon from "@mui/icons-material/Google";
-
-// Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDInput from "components/MDInput";
 import MDButton from "components/MDButton";
-
-// Authentication layout components
 import BasicLayout from "layouts/authentication/components/BasicLayout";
-
-// Images
 import bgImage from "assets/images/bg-sign-in-basic.jpeg";
+import { publicApiRequest } from '../../../utils/api'; // 경로에 맞게 수정하세요
 
 function Basic() {
-  const [rememberMe, setRememberMe] = useState(false);1
+  const [rememberMe, setRememberMe] = useState(false);
+  const [formData, setFormData] = useState({ email: "", password: "" }); // 로그인 입력 데이터 상태 관리
+  const navigate = useNavigate(); // navigate 사용
+
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value }); // 입력 데이터 업데이트
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // 기본 폼 제출 방지
+
+    try {
+      const token = await publicApiRequest('/login', 'POST', {
+        email: formData.email,
+        password: formData.password,
+      });
+        localStorage.setItem('authToken', token); // 토큰을 로컬 스토리지에 저장
+      // 로그인 성공 시 처리 (예: 토큰 저장, 사용자 리다이렉트 등)
+      console.log(token);
+      navigate('/dashboard'); // 대시보드 페이지로 리다이렉트 (경로는 필요에 따라 변경)
+    } catch (error) {
+      console.error("로그인 실패:", error);
+      // 에러 메시지를 사용자에게 알리는 로직 추가 가능
+    }
+  };
 
   return (
     <BasicLayout image={bgImage}>
@@ -67,12 +81,26 @@ function Basic() {
           </Grid>
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
-          <MDBox component="form" role="form">
+          <MDBox component="form" role="form" onSubmit={handleSubmit}>
             <MDBox mb={2}>
-              <MDInput type="email" label="Email" fullWidth />
+              <MDInput
+                type="email"
+                label="Email"
+                fullWidth
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange} // 입력 변경 이벤트 핸들러
+              />
             </MDBox>
             <MDBox mb={2}>
-              <MDInput type="password" label="Password" fullWidth />
+              <MDInput
+                type="password"
+                label="Password"
+                fullWidth
+                name="password"
+                value={formData.password}
+                onChange={handleInputChange} // 입력 변경 이벤트 핸들러
+              />
             </MDBox>
             <MDBox display="flex" alignItems="center" ml={-1}>
               <Switch checked={rememberMe} onChange={handleSetRememberMe} />
@@ -87,7 +115,7 @@ function Basic() {
               </MDTypography>
             </MDBox>
             <MDBox mt={4} mb={1}>
-              <MDButton variant="gradient" color="info" fullWidth>
+              <MDButton variant="gradient" color="info" fullWidth type="submit">
                 로그인
               </MDButton>
             </MDBox>
