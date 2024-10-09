@@ -15,6 +15,8 @@ import BasicLayout from "layouts/authentication/components/BasicLayout";
 import bgImage from "assets/images/bg-sign-in-basic.jpeg";
 import { publicApiRequest } from '../../../utils/api'; // 경로에 맞게 수정하세요
 
+import 'regenerator-runtime/runtime';
+
 function Basic() {
   const [rememberMe, setRememberMe] = useState(false);
   const [formData, setFormData] = useState({ email: "", password: "" }); // 로그인 입력 데이터 상태 관리

@@ -63,6 +63,7 @@ module.exports = {
     ],
     
     devServer: {
+        hot: true, // HMR 활성화
         static: "./dist",
         historyApiFallback: true,
         port: 3000,
