@@ -31,16 +31,20 @@ function Basic() {
 
   const handleSubmit = async (e) => {
     e.preventDefault(); // 기본 폼 제출 방지
-
+  
     try {
-      const token = await publicApiRequest('/login', 'POST', {
+      const response = await publicApiRequest('/login', 'POST', {
         email: formData.email,
         password: formData.password,
       });
-        localStorage.setItem('authToken', token); // 토큰을 로컬 스토리지에 저장
+  
+      // 실제 토큰을 저장
+      const token = response.token; // 응답 객체에서 토큰 추출
+      localStorage.setItem('authToken', token); // 토큰을 로컬 스토리지에 저장
+      
       // 로그인 성공 시 처리 (예: 토큰 저장, 사용자 리다이렉트 등)
       console.log(token);
-      navigate('/dashboard'); // 대시보드 페이지로 리다이렉트 (경로는 필요에 따라 변경)
+      navigate('/coding-test'); // 대시보드 페이지로 리다이렉트 (경로는 필요에 따라 변경)
     } catch (error) {
       console.error("로그인 실패:", error);
       // 에러 메시지를 사용자에게 알리는 로직 추가 가능

@@ -16,7 +16,7 @@ Coded by www.creative-tim.com
 import { useState, useEffect, useMemo } from "react";
 
 // react-router components
-import { Routes, Route, Navigate, useLocation , useNavigate  } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation, useNavigate } from "react-router-dom";
 
 // @mui material components
 import { ThemeProvider } from "@mui/material/styles";
@@ -54,8 +54,7 @@ import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "co
 import brandWhite from "assets/images/logo-ct.png";
 import brandDark from "assets/images/logo-ct-dark.png";
 
-
-import useFetchMenus from './utils/hook/useFetchMenus.js'; // 훅 import
+import { publicApiRequest  , privateApiRequest} from './utils/api'; // 경로에 맞게 수정하세요
 
 
 export default function App() {
@@ -73,18 +72,57 @@ export default function App() {
   const [onMouseEnter, setOnMouseEnter] = useState(false);
   const [rtlCache, setRtlCache] = useState(null);
   const { pathname } = useLocation();
-
-  const [user, setUser] = useState(null); // 사용자 정보를 관리할 상태
   const [menusData, setMenusData] = useState({ routes: [], loading: true, error: null });
   const navigate = useNavigate();
 
-    // 사용자 인증 및 메뉴 로딩
-    useEffect(() => {
-      const token = localStorage.getItem('token');
-      if (token) {
-        setUser({ role: 'user' }); // 실제 사용자 데이터를 가져오는 로직 추가
-      }
-    }, [navigate]);
+
+  useEffect(() => {
+    const token = localStorage.getItem('authToken');
+
+    if (token) {
+      const fetchMenus = async () => {
+        try {
+          const response = await privateApiRequest('/menus', 'GET'); // API 호출
+          const menus = response.data;
+
+          // 사용자 역할에 따른 메뉴 필터링
+          const filteredMenus = menus.filter(menu => menu.MENU_ROLE === role);
+
+          // 메뉴를 라우트 형식으로 변환
+          const transformedRoutes = transformMenusToRoutes(filteredMenus);
+          setMenusData({ routes: transformedRoutes, loading: false, error: null });
+        } catch (error) {
+          console.error("메뉴 로딩 실패:", error);
+          setMenusData({ routes: [], loading: false, error });
+        }
+      };
+
+      fetchMenus(); // 비동기 함수 호출
+    } else {
+      // 로그인 및 회원가입 메뉴를 직접 설정
+      const guestMenus = [
+        {
+          type: "collapse",
+          name: "Sign In",
+          key: "sign-in",
+          icon: <Icon fontSize="small">login</Icon>,
+          route: "/authentication/sign-in",
+          component: <SignIn />,
+        },
+        {
+          type: "collapse",
+          name: "Sign Up",
+          key: "sign-up",
+          icon: <Icon fontSize="small">assignment</Icon>,
+          route: "/authentication/sign-up",
+          component: <SignUp />,
+        },
+      ];
+
+      setMenusData({ routes: guestMenus, loading: false, error: null });
+    }
+
+  }, [navigate]);
 
   // Cache for the rtl
   useMemo(() => {
@@ -128,50 +166,18 @@ export default function App() {
   }, [pathname]);
 
 
-
-    // 사용자 역할에 따라 메뉴를 로드
-    useEffect(() => {
-      if (user) {
-        const { routes, loading, error } = useFetchMenus(user.role);
-        setMenusData({ routes, loading, error });
-      } else {
-        // 사용자 정보가 없을 경우 로그인 및 회원가입 메뉴를 직접 설정
-        const guestMenus = [
-          {
-            type: "collapse",
-            name: "Sign In",
-            key: "sign-in",
-            icon: <Icon fontSize="small">login</Icon>,
-            route: "/authentication/sign-in",
-            component: <SignIn />,
-          },
-          {
-            type: "collapse",
-            name: "Sign Up",
-            key: "sign-up",
-            icon: <Icon fontSize="small">assignment</Icon>,
-            route: "/authentication/sign-up",
-            component: <SignUp />,
-          },
-        ];
-
-        setMenusData({ routes: guestMenus, loading: false, error: null });
+  const getRoutes = (allRoutes) => {
+    return allRoutes.map((route) => {
+      if (route.collapse) {
+        return getRoutes(route.collapse);
       }
-    }, [user]);
-      
+      if (route.route) {
+        return <Route exact path={route.route} element={route.component} key={route.key} />;
+      }
+      return null;
+    });
+  };
 
-    const getRoutes = (allRoutes) => {
-      return allRoutes.map((route) => {
-        if (route.collapse) {
-          return getRoutes(route.collapse);
-        }
-        if (route.route) {
-          return <Route exact path={route.route} element={route.component} key={route.key} />;
-        }
-        return null;
-      });
-    };
-  
 
 
 
@@ -229,5 +235,5 @@ export default function App() {
         <Route path="*" element={<Navigate to="/authentication/sign-in" />} />
       </Routes>
     </ThemeProvider>
-    </>
+  </>
 }
