@@ -72,8 +72,6 @@ export default function App() {
           const transformedRoutes = format.transformMenusToRoutes(menus);
           console.log("transformedRoutes",transformedRoutes)
           setMenusData({ routes: transformedRoutes, loading: false, error: null });
-          setLayout(dispatch, "dashboard"); // layout을 "dashboard"로 설정
-          navigate('/coding-test'); // 경로 변경
         } catch (error) {
           console.error("메뉴 로딩 실패:", error);
           setMenusData({ routes: [], loading: false, error });
@@ -184,7 +182,7 @@ export default function App() {
           <Sidenav
             color={sidenavColor}
             brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
-            brandName="Material Dashboard 2"
+            brandName="메뉴"
             routes={menusData.routes} // 수정된 부분
             onMouseEnter={handleOnMouseEnter}
             onMouseLeave={handleOnMouseLeave}

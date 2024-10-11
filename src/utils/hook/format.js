@@ -27,7 +27,8 @@ const menuComponentMap = {
 // 메뉴 데이터를 라우트 형식으로 변환하는 함수
 export const transformMenusToRoutes = (menus) => {
   return menus.map(menu => ({
-    type: menu.type,
+    type: "title",// 하위 메뉴가 있으면 "title", 없으면 "collapse"
+    menuType : menu.menuType,
     name: menu.name, // 메뉴 이름
     key: menu.menuCode, // 고유 키
     icon: <Icon fontSize="small">{menu.icon}</Icon>, // 아이콘
