@@ -69,5 +69,5 @@ module.exports = {
         historyApiFallback: true,
         port: 3000,
     },
-    mode: "development", // 또는 "production"
+    mode: "production", // 또는 "production"
 };
