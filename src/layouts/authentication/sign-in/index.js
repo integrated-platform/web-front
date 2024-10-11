@@ -16,8 +16,10 @@ import bgImage from "assets/images/bg-sign-in-basic.jpeg";
 import { publicApiRequest } from '../../../utils/api'; // 경로에 맞게 수정하세요
 
 import 'regenerator-runtime/runtime';
+import { useMaterialUIController, setLayout } from "context";
 
 function Basic() {
+    const [controller, dispatch] = useMaterialUIController();
   const [rememberMe, setRememberMe] = useState(false);
   const [formData, setFormData] = useState({ email: "", password: "" }); // 로그인 입력 데이터 상태 관리
   const navigate = useNavigate(); // navigate 사용
@@ -44,7 +46,8 @@ function Basic() {
       
       // 로그인 성공 시 처리 (예: 토큰 저장, 사용자 리다이렉트 등)
       console.log(token);
-      navigate('/coding-test'); // 대시보드 페이지로 리다이렉트 (경로는 필요에 따라 변경)
+      setLayout(dispatch, "dashboard"); // layout을 "dashboard"로 설정
+      navigate('/coding-test'); // 경로 변경
     } catch (error) {
       console.error("로그인 실패:", error);
       // 에러 메시지를 사용자에게 알리는 로직 추가 가능

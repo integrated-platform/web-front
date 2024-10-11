@@ -52,6 +52,7 @@ module.exports = {
             template: "./public/index.html",
             filename: "index.html",
             favicon: "./public/favicon.png",
+            manifest: './public/manifest.json', // manifest 경로 지정
             templateParameters: {
                 PUBLIC_URL: process.env.PUBLIC_URL || '',
             },

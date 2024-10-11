@@ -27,11 +27,12 @@ const menuComponentMap = {
 // 메뉴 데이터를 라우트 형식으로 변환하는 함수
 export const transformMenusToRoutes = (menus) => {
   return menus.map(menu => ({
-    type: "collapse",
-    name: menu.MENU_CODE, // 메뉴 이름
-    key: menu.MENU_CODE, // 고유 키
-    icon: <Icon fontSize="small">{menu.ICON}</Icon>, // 아이콘
-    route: menu.ROUTE, // 라우트 경로
-    component: menuComponentMap[menu.ROUTE], // 매핑된 컴포넌트
+    type: menu.type,
+    name: menu.name, // 메뉴 이름
+    key: menu.menuCode, // 고유 키
+    icon: <Icon fontSize="small">{menu.icon}</Icon>, // 아이콘
+    route: menu.route, // 라우트 경로
+    component: menuComponentMap[menu.route], // 매핑된 컴포넌트
+    collapse: menu.children ? transformMenusToRoutes(menu.children) : [] // 하위 메뉴 처리
   }));
 };
