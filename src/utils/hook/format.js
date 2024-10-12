@@ -15,7 +15,7 @@ import SignUp from "layouts/authentication/sign-up";
 // import CodingTestAnalyzeComponent from "layouts/codingTestAnalyze"; // 가상의 컴포넌트 예시
 const menuComponentMap = {
   "/coding-test": Dashboard, // 여기에 적절한 컴포넌트를 넣으세요
-  "/tables": "Tables",
+  "/coding-test/check": Dashboard,
   "/billing": "Billing",
   "/notifications": "Notifications",
   "/profile": "Profile",

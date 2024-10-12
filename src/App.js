@@ -7,10 +7,7 @@ import MDBox from "components/MDBox";
 import Sidenav from "examples/Sidenav";
 import Configurator from "examples/Configurator";
 import theme from "assets/theme";
-import themeRTL from "assets/theme/theme-rtl";
 import themeDark from "assets/theme-dark";
-import themeDarkRTL from "assets/theme-dark/theme-rtl";
-import 'regenerator-runtime/runtime';
 import rtlPlugin from "stylis-plugin-rtl";
 import { CacheProvider } from "@emotion/react";
 import createCache from "@emotion/cache";
@@ -19,7 +16,7 @@ import SignUp from "layouts/authentication/sign-up";
 import { useMaterialUIController, setMiniSidenav, setOpenConfigurator, setLayout } from "context";
 import brandWhite from "assets/images/logo-ct.png";
 import brandDark from "assets/images/logo-ct-dark.png";
-import { publicApiRequest, privateApiRequest } from './utils/api';
+import { privateApiRequest } from './utils/api';
 import * as format from './utils/hook/format';
 
 export default function App() {
@@ -38,30 +35,51 @@ export default function App() {
   const [rtlCache, setRtlCache] = useState(null);
   const { pathname } = useLocation();
   const [menusData, setMenusData] = useState({ routes: [], loading: true, error: null });
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
   const navigate = useNavigate();
 
-  // 메뉴 데이터 로딩 최적화: useCallback 사용해 불필요한 재생성 방지
+ 
+
+  // 세션에서 토큰 확인
+  useEffect(() => {
+
+    const token = sessionStorage.getItem('accessToken');
+    if (token) {
+      fetchMenus();
+      setIsAuthenticated(true);
+    } else {
+ 
+      setIsAuthenticated(false);
+    }
+  }, [navigate]);
+
+  // 인증 상태에 따라 대시보드로 이동
+  useEffect(() => {
+    console.log('isAuthenticated',isAuthenticated)
+    if (isAuthenticated) {
+      setLayout(dispatch, "dashboard"); // layout을 "dashboard"로 설정
+      navigate('/dashboard');
+    }else{
+      setLayout(dispatch, "page"); // layout을 "dashboard"로 설정
+      navigate('/authentication/sign-in');
+    }
+  }, [isAuthenticated]);
+
+  // 메뉴 데이터를 가져오는 함수
   const fetchMenus = useCallback(async () => {
     try {
-      const response = await privateApiRequest('/menus', 'GET'); // API 호출
+      const response = await privateApiRequest('/menus', 'GET');
       const menus = response.data;
-      const transformedRoutes = format.transformMenusToRoutes(menus); // 메뉴를 라우트 형식으로 변환
+      const transformedRoutes = format.transformMenusToRoutes(menus);
       setMenusData({ routes: transformedRoutes, loading: false, error: null });
+      
     } catch (error) {
       console.error("메뉴 로딩 실패:", error);
       setMenusData({ routes: [], loading: false, error });
     }
   }, []);
 
-  // 메뉴 및 토큰 확인 로직 최적화
-  useEffect(() => {
-    const token = localStorage.getItem('authToken');
-    if (token) {
-      fetchMenus(); // 토큰이 있을 때만 메뉴 데이터를 가져옴
-    } else {
-      setMenusData({ routes: [], loading: false, error: null });
-    }
-  }, [fetchMenus]);
 
   // Cache 설정 최적화: useMemo 사용해 한 번만 설정
   useMemo(() => {
@@ -154,7 +172,7 @@ export default function App() {
             color={sidenavColor}
             brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
             brandName="메뉴"
-            routes={menusData.routes} // 수정된 부분
+            routes={menusData.routes} 
             onMouseEnter={handleOnMouseEnter}
             onMouseLeave={handleOnMouseLeave}
           />
@@ -164,11 +182,11 @@ export default function App() {
       )}
       {layout === "vr" && <Configurator />}
       <Routes>
-        {localStorage.getItem('authToken') && getRoutes(menusData.routes)} {/* 사용자 정의 경로들, 토큰이 있을 때만 */}
+        {isAuthenticated && getRoutes(menusData.routes)} {/* 인증된 사용자의 경우 */}
         <Route path="/" element={<Navigate to="/authentication/sign-in" />} />
         <Route path="/authentication/sign-in" element={<SignIn />} />
         <Route path="/authentication/sign-up" element={<SignUp />} />
-        <Route path="*" element={<Navigate to="/authentication/sign-in" />} />
+        {/* <Route path="*" element={<Navigate to="/authentication/sign-in" />} /> */}
       </Routes>
     </ThemeProvider>
   );

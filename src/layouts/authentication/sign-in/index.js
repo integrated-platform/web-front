@@ -39,20 +39,24 @@ function Basic() {
         email: formData.email,
         password: formData.password,
       });
-  
-      // 실제 토큰을 저장
-      const token = response.token; // 응답 객체에서 토큰 추출
-      localStorage.setItem('authToken', token); // 토큰을 로컬 스토리지에 저장
       
+      // Access Token을 응답에서 추출
+      const accessToken = response.data.accessToken; // 응답 객체에서 Access Token 추출
+      
+      // Access Token을 세션 스토리지에 저장
+      sessionStorage.setItem('accessToken', accessToken); // Access Token을 세션 스토리지에 저장
+  
       // 로그인 성공 시 처리 (예: 토큰 저장, 사용자 리다이렉트 등)
-      console.log(token);
+      console.log("Access Token:", accessToken);
+      
+      // 보안 처리: 필요한 경우 상태를 업데이트하고 리다이렉트
       setLayout(dispatch, "dashboard"); // layout을 "dashboard"로 설정
       navigate('/coding-test'); // 경로 변경
     } catch (error) {
       console.error("로그인 실패:", error);
       // 에러 메시지를 사용자에게 알리는 로직 추가 가능
     }
-  };
+};
 
   return (
     <BasicLayout image={bgImage}>
